@@ -26,11 +26,11 @@ class PostController
                     Column::make('Title', 'title')->sortable(),
                     Column::make('Azioni')->component(ColumnType::Actions)->sortable(),
                 ]))->form([
-                Input::make('Text'),
-                Input::make('Password')->type('password'),
-                Input::make('Dropdown')->type('select')->options([ 1 => 'one', 2 => 'two']),
-                Input::make('Message')->type('textarea'),
-            ])
+                    Input::make('Text'),
+                    Input::make('Password')->type('password'),
+                    Input::make('Dropdown')->type('select')->options([1 => 'one', 2 => 'two']),
+                    Input::make('Message')->type('textarea'),
+                ])
             ->render('Posts/Index');
     }
 }

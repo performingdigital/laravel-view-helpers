@@ -38,7 +38,7 @@ class TestCase extends Orchestra
     {
         config()->set('database.default', 'testing');
 
-        $migration = include __DIR__ . '/../database/migrations/create_posts_table.php';
+        $migration = include __DIR__.'/../database/migrations/create_posts_table.php';
         $migration->up();
     }
 }

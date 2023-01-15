@@ -33,7 +33,7 @@ final class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \Orchestra\Testbench\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \Performing\View\Tests\FakeApp\Http\Middleware\HandleInertiaRequests::class
+            \Performing\View\Tests\FakeApp\Http\Middleware\HandleInertiaRequests::class,
         ],
 
         'api' => [

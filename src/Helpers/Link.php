@@ -3,7 +3,6 @@
 namespace Performing\View\Helpers;
 
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Support\Str;
 
 class Link implements Arrayable
 {
@@ -22,7 +21,7 @@ class Link implements Arrayable
     {
         return [
             'label' => $this->label,
-            'name' => $this->route
+            'name' => $this->route,
         ];
     }
 }

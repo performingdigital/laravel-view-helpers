@@ -33,12 +33,14 @@ class Table implements Arrayable
     public function columns(array $columns)
     {
         $this->columns = $columns;
+
         return $this;
     }
 
     public function filters(array $filters)
     {
         $this->filters = [...$this->filters, ...$filters];
+
         return $this;
     }
 
@@ -46,14 +48,15 @@ class Table implements Arrayable
     {
         $this->rows = $data;
         $this->resource = $class;
+
         return $this;
     }
 
     public function toArray()
     {
         collect($this->filters)->map(function ($filter) {
-            if (!empty(request()->input('filters.' . $filter->key))) {
-                $filter->apply($this->rows, request()->input('filters.' . $filter->key));
+            if (! empty(request()->input('filters.'.$filter->key))) {
+                $filter->apply($this->rows, request()->input('filters.'.$filter->key));
             }
         });
 
@@ -72,7 +75,7 @@ class Table implements Arrayable
             'filters' => $this->filters,
             'query' => collect($this->filters)
                 ->mapWithKeys(fn ($filter) => [
-                    $filter->key => request()->input('filters.' . $filter->key)
+                    $filter->key => request()->input('filters.'.$filter->key),
                 ])
                 ->merge($this->query)
                 ->toArray(),

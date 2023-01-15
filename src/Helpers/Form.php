@@ -3,7 +3,6 @@
 namespace Performing\View\Helpers;
 
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Support\Str;
 
 class Form implements Arrayable
 {

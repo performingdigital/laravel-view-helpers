@@ -11,13 +11,13 @@ return [
                 ->type('text')
                 ->on(function ($query, $value) {
                     return $query->search($value);
-                })
+                }),
         ],
 
         'default_query' => [
             'per_page' => 15,
         ],
 
-        'types' => ColumnType::class
-    ]
+        'types' => ColumnType::class,
+    ],
 ];

@@ -33,30 +33,34 @@ class Input implements Arrayable
     public function help(string $help)
     {
         $this->help = $help;
+
         return $this;
     }
 
     public function type(string $type)
     {
         $this->type = $type;
+
         return $this;
     }
 
     public function options(array $options)
     {
         $this->options = $options;
+
         return $this;
     }
 
     public function validation(string $validation)
     {
         $this->validation = $validation;
+
         return $this;
     }
 
     public function toData(): array
     {
-        return [ $this->name => '' ];
+        return [$this->name => ''];
     }
 
     public function toArray(): array

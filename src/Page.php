@@ -2,13 +2,12 @@
 
 namespace Performing\View;
 
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Inertia\Inertia;
 use Performing\View\Concerns\HasActions;
 use Performing\View\Concerns\HasForm;
 use Performing\View\Concerns\HasTable;
-use Illuminate\Contracts\Support\Arrayable;
-use Inertia\Inertia;
-use Performing\View\Tests\FakeApp\Http\Resources\PostResource;
 
 class Page implements Arrayable
 {
@@ -55,6 +54,7 @@ class Page implements Arrayable
     public function merge($data)
     {
         $this->data = array_merge($this->data, $data);
+
         return $this;
     }
 

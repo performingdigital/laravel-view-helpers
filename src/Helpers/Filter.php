@@ -2,9 +2,9 @@
 
 namespace Performing\View\Helpers;
 
+use Closure;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Str;
-use Closure;
 
 class Filter implements Arrayable
 {

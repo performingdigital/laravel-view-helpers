@@ -52,6 +52,6 @@ it('create a page', function () {
                 ->where('type', 'select')
                 ->where('label', 'Dropdown')
                 ->where('name', 'dropdown')
-                ->where('options', [ 1 => 'one', 2 => 'two' ]))
+                ->where('options', [1 => 'one', 2 => 'two']))
             ->has('form.data', 4));
 });
