@@ -58,10 +58,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Performing\\Page\\PageServiceProvider"
+                "Performing\\View\\PageServiceProvider"
             ],
             "aliases": {
-                "Page": "Performing\\Page\\Facades\\Page"
+                "Page": "Performing\\View\\Facades\\Page"
             }
         }
     },
