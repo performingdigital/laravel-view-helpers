@@ -1,15 +1,6 @@
 # Laravel View Helpers for InertiaJS
 This package offers some helpers to build common data strucuture and logic in the context of CRUD applications.
 
-
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/laravel-view-helpers.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/laravel-view-helpers)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
-
 ## Installation
 
 You can install the package via composer:
