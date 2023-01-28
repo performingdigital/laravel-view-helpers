@@ -9,7 +9,8 @@ class Link implements Arrayable
     public function __construct(
         protected string $label,
         protected string $route
-    ) {}
+    ) {
+    }
 
     public static function make($label, $route)
     {

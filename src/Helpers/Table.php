@@ -40,6 +40,7 @@ class Table implements Arrayable
     public function filters(array $filters)
     {
         $this->filters = array_merge($this->filters, $filters);
+
         return $this;
     }
 

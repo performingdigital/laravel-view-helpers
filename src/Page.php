@@ -3,13 +3,12 @@
 namespace Performing\View;
 
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Traits\Macroable;
+use Inertia\Inertia;
 use Performing\View\Concerns\HasActions;
 use Performing\View\Concerns\HasForm;
 use Performing\View\Concerns\HasTable;
-use Illuminate\Contracts\Support\Arrayable;
-use Inertia\Inertia;
 use Performing\View\Concerns\Mergeable;
 
 class Page implements Arrayable
