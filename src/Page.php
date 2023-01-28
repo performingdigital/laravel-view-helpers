@@ -3,7 +3,6 @@
 namespace Performing\View;
 
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Traits\Macroable;
 use Inertia\Inertia;
 use Performing\View\Concerns\HasActions;
