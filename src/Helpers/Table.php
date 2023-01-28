@@ -16,11 +16,6 @@ class Table implements Arrayable
 
     protected array $query = [];
 
-    public static function make()
-    {
-        return new static();
-    }
-
     public function __construct()
     {
         if (config('view-helpers.table.filters')) {
@@ -28,6 +23,11 @@ class Table implements Arrayable
         }
 
         $this->query = config('view-helpers.table.default_query');
+    }
+
+    public static function make()
+    {
+        return new static();
     }
 
     public function columns(array $columns)
@@ -39,8 +39,7 @@ class Table implements Arrayable
 
     public function filters(array $filters)
     {
-        $this->filters = [...$this->filters, ...$filters];
-
+        $this->filters = array_merge($this->filters, $filters);
         return $this;
     }
 

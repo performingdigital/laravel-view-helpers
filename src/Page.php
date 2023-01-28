@@ -4,13 +4,18 @@ namespace Performing\View;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Inertia\Inertia;
+use Illuminate\Support\Traits\Macroable;
 use Performing\View\Concerns\HasActions;
 use Performing\View\Concerns\HasForm;
 use Performing\View\Concerns\HasTable;
+use Illuminate\Contracts\Support\Arrayable;
+use Inertia\Inertia;
+use Performing\View\Concerns\Mergeable;
 
 class Page implements Arrayable
 {
+    use Macroable;
+    use Mergeable;
     use HasForm;
     use HasTable;
     use HasActions;
@@ -20,6 +25,7 @@ class Page implements Arrayable
     public function __construct(
         protected string $title
     ) {
+        $this->data['title'] = $this->title;
     }
 
     public static function make(string $title)
@@ -27,38 +33,7 @@ class Page implements Arrayable
         return new static($title);
     }
 
-    public function toArrayRecursive($object): array|string|null
-    {
-        if ($object instanceof JsonResource) {
-            $object = $object->toArray(null) ?? [];
-        } elseif ($object instanceof Arrayable) {
-            $object = $object->toArray() ?? [];
-        }
-
-        if (is_iterable($object)) {
-            foreach ($object as $key => $value) {
-                $object[$key] = $this->toArrayRecursive($object[$key]);
-            }
-        }
-
-        return $object;
-    }
-
-    public function toArray($part = null)
-    {
-        $this->data['title'] = $this->title;
-        // return $this->toArrayRecursive($this->data);
-        return $this->data;
-    }
-
-    public function merge($data)
-    {
-        $this->data = array_merge($this->data, $data);
-
-        return $this;
-    }
-
-    public function getData()
+    public function toArray()
     {
         return $this->data;
     }
