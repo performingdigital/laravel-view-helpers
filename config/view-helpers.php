@@ -1,7 +1,5 @@
 <?php
 
-use Performing\View\Helpers\Filter;
-
 return [
     'table' => [
         'use_filters' => true,
