@@ -13,7 +13,7 @@ class Column implements Arrayable
 
     public function __construct(
         protected string $title,
-        protected ?string $key = null,
+        public ?string $key = null,
     ) {
         $this->key ??= Str::of($title)->lower()->slug()->toString();
     }
@@ -30,9 +30,9 @@ class Column implements Arrayable
         return $this;
     }
 
-    public function component(ColumnType $type)
+    public function component(string $type)
     {
-        $this->type = $type->value;
+        $this->type = $type;
 
         return $this;
     }
@@ -43,7 +43,7 @@ class Column implements Arrayable
             'title' => $this->title,
             'key' => $this->key,
             'sortable' => $this->sortable,
-            'type' => $this->type ?? ColumnType::Text->value,
+            'type' => $this->type ?? 'text',
         ];
     }
 }

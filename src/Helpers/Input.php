@@ -22,12 +22,12 @@ class Input implements Arrayable
     public function __construct(string $label, ?string $name = null)
     {
         $this->label = $label;
-        $this->name ??= Str::slug($this->label);
+        $this->name = $name ?? Str::slug($this->label);
     }
 
-    public static function make($label)
+    public static function make($label, $name = null): self
     {
-        return new static($label);
+        return new static($label, $name);
     }
 
     public function help(string $help)

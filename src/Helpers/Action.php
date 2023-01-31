@@ -11,11 +11,11 @@ class Action implements Arrayable
 
     protected $data = [];
 
-    public static function make(string $label, string $url): Action
+    public static function make(string $label, string $href): Action
     {
         $action = new Action();
 
-        return $action->merge(['label' => $label, 'url' => $url]);
+        return $action->merge(['label' => $label, 'href' => $href]);
     }
 
     public function toArray(): array

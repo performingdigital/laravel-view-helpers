@@ -14,7 +14,8 @@ trait HasForm
             'schema' => $this->schema,
             'data' => collect($this->schema)
                 ->mapWithKeys(fn ($input) => $input->toData())
-                ->merge($default),
+                ->merge($default)
+                ->toArray(),
         ];
 
         return $this;

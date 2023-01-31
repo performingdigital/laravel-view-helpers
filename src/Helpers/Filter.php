@@ -14,7 +14,7 @@ class Filter implements Arrayable
 
     protected $options;
 
-    protected Closure $callback;
+    protected ?Closure $callback = null;
 
     public function __construct(
         protected string $label,
