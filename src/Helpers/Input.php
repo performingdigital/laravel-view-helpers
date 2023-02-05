@@ -22,7 +22,7 @@ class Input implements Arrayable
     public function __construct(string $label, ?string $name = null)
     {
         $this->label = $label;
-        $this->name = $name ?? Str::slug($this->label);
+        $this->name = $name ?? Str::of($label)->lower()->slug('_')->toString()
     }
 
     public static function make($label, $name = null): self
