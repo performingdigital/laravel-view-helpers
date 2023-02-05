@@ -15,7 +15,7 @@ class Column implements Arrayable
         protected string $title,
         public ?string $key = null,
     ) {
-        $this->key ??= Str::of($title)->lower()->slug()->toString();
+        $this->key ??= Str::of($title)->lower()->slug('_')->toString();
     }
 
     public static function make(string $title, ?string $key = null)
