@@ -38,6 +38,12 @@ class Page implements Arrayable
 
     public function render($component)
     {
-        return Inertia::render($component, $this->toArray());
+        $data = [];
+        
+        foreach ($this->data as $key => $value) {
+            $data[$key] = fn () => $value;
+        }
+        
+        return Inertia::render($component, $data);
     }
 }
