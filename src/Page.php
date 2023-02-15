@@ -39,11 +39,11 @@ class Page implements Arrayable
     public function render($component)
     {
         $data = [];
-        
+
         foreach ($this->data as $key => $value) {
             $data[$key] = fn () => $value;
         }
-        
+
         return Inertia::render($component, $data);
     }
 }
