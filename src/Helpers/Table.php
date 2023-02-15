@@ -10,6 +10,8 @@ class Table implements Arrayable
 
     protected array $filters = [];
 
+    protected array $sorters = [];
+
     protected $rows = null;
 
     protected ?string $resource = null;
@@ -44,6 +46,13 @@ class Table implements Arrayable
         return $this;
     }
 
+    public function sorters(array $sorters)
+    {
+        $this->sorters = array_merge($this->sorters, $sorters);
+
+        return $this;
+    }
+
     public function rows($data, ?string $class = null)
     {
         $this->rows = $data;
@@ -55,10 +64,20 @@ class Table implements Arrayable
     public function toArray()
     {
         collect($this->filters)->map(function ($filter) {
-            if (! empty(request()->input('filters.'.$filter->key))) {
-                $filter->apply($this->rows, request()->input('filters.'.$filter->key));
+            if (! empty(request()->input('filters.' . $filter->key))) {
+                $filter->apply($this->rows, request()->input('filters.' . $filter->key));
             }
         });
+
+        if (request()->has('sort')) {
+            $column = str_replace('-', '', request()->get('sort'));
+            $direction = str_starts_with(request()->get('sort'), '-') ? 'asc' : 'desc';
+            if (array_key_exists($column, $this->sorters)) {
+                $this->sorters[$column]($this->rows, $direction);
+            } else {
+                $this->rows->orderBy($column, $direction);
+            }
+        }
 
         $this->rows = $this->rows
             ->paginate(request('filters.per_page', 15))
@@ -75,7 +94,7 @@ class Table implements Arrayable
             'filters' => $this->filters,
             'query' => collect($this->filters)
                 ->mapWithKeys(fn ($filter) => [
-                    $filter->key => request()->input('filters.'.$filter->key),
+                    $filter->key => request()->input('filters.' . $filter->key),
                 ])
                 ->merge($this->query)
                 ->toArray(),
