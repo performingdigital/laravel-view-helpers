@@ -21,12 +21,14 @@ class Action implements Arrayable
     public function confirm()
     {
         $this->data['confirm'] = true;
+
         return $this;
     }
 
     public function __call(string $name, array $args)
     {
         $this->data[$name] = $args[0];
+
         return $this;
     }
 
