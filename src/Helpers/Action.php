@@ -18,6 +18,18 @@ class Action implements Arrayable
         return $action->merge(['label' => $label, 'href' => $href]);
     }
 
+    public function confirm()
+    {
+        $this->data['confirm'] = true;
+        return $this;
+    }
+
+    public function __call(string $name, array $args)
+    {
+        $this->data[$name] = $args[0];
+        return $this;
+    }
+
     public function toArray(): array
     {
         return $this->data;
