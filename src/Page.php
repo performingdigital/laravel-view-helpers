@@ -30,6 +30,23 @@ class Page implements Arrayable
     {
         return new static($title);
     }
+    
+    public function __call(string $name, array $args) {
+        if (str_starts_with($name, 'table') && !method_exists($this, $name)) {
+            $callback = $args[0];
+            if (! is_callable($callback)) {
+                throw new \Exception("Table helper expects callable as first argument");
+            }
+            $this->data[strtolower(str_replace('table', '', $name))] = $callback(Table::make())->toArray();
+
+            return $this;
+        }
+
+        if (! method_exists($this, $name)) {
+            $this->data[$name] = $args[0];
+            return $this;
+        }
+    }
 
     public function toArray()
     {
