@@ -34,7 +34,7 @@ class Table implements Arrayable
 
     public function columns(array $columns)
     {
-        $this->columns = $columns;
+        $this->columns = collect($columns)->map->toArray()->toArray();
 
         return $this;
     }
@@ -64,8 +64,8 @@ class Table implements Arrayable
     public function toArray()
     {
         collect($this->filters)->map(function ($filter) {
-            if (! empty(request()->input('filters.'.$filter->key))) {
-                $filter->apply($this->rows, request()->input('filters.'.$filter->key));
+            if (! is_null(request()->input('filters.' . $filter->key))) {
+                $filter->apply($this->rows, request()->input('filters.' . $filter->key));
             }
         });
 
@@ -94,9 +94,9 @@ class Table implements Arrayable
             'filters' => $this->filters,
             'query' => collect($this->filters)
                 ->mapWithKeys(fn ($filter) => [
-                    $filter->key => request()->input('filters.'.$filter->key),
+                    $filter->key => request()->input('filters.' . $filter->key),
                 ])
-                ->merge($this->query)
+                ->merge([ 'per_page' => request('filters.per_page') ], $this->query)
                 ->toArray(),
         ];
     }
