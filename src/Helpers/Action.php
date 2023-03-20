@@ -27,6 +27,11 @@ class Action implements Arrayable
 
     public function __call(string $name, array $args)
     {
+        if (str_starts_with($name, 'as')) {
+            $this->data['method'] = strtolower(str_replace('as', '', $name));
+            return $this;
+        }
+
         $this->data[$name] = $args[0];
 
         return $this;
