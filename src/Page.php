@@ -3,7 +3,6 @@
 namespace Performing\View;
 
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Support\Traits\Macroable;
 use Inertia\Inertia;
 use Performing\View\Concerns\HasActions;
 use Performing\View\Concerns\HasForm;
@@ -36,11 +35,12 @@ class Page implements Arrayable
         return $this->data;
     }
 
-    public function __call(string $name, array $args) {
-        if (str_starts_with($name, 'table') && !method_exists($this, $name)) {
+    public function __call(string $name, array $args)
+    {
+        if (str_starts_with($name, 'table') && ! method_exists($this, $name)) {
             $callback = $args[0];
             if (! is_callable($callback)) {
-                throw new \Exception("Table helper expects callable as first argument");
+                throw new \Exception('Table helper expects callable as first argument');
             }
             $this->data[strtolower(str_replace('table', '', $name))] = $callback(Table::make())->toArray();
 
@@ -49,6 +49,7 @@ class Page implements Arrayable
 
         if (! method_exists($this, $name)) {
             $this->data[$name] = $args[0];
+
             return $this;
         }
     }

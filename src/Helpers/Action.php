@@ -29,6 +29,7 @@ class Action implements Arrayable
     {
         if (str_starts_with($name, 'as')) {
             $this->data['method'] = strtolower(str_replace('as', '', $name));
+
             return $this;
         }
 
