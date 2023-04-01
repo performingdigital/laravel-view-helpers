@@ -18,12 +18,10 @@ class Table implements Arrayable
 
     protected array $query = [];
 
+    protected string $filtersKey = 'filters';
+
     public function __construct()
     {
-        if (config('view-helpers.table.filters')) {
-            array_merge($this->filters, config('view-helpers.table.default_filters'));
-        }
-
         $this->query = config('view-helpers.table.default_query');
     }
 
@@ -35,21 +33,24 @@ class Table implements Arrayable
     public function columns(array $columns)
     {
         $this->columns = collect($columns)->map->toArray()->toArray();
-
         return $this;
     }
 
     public function filters(array $filters)
     {
         $this->filters = array_merge($this->filters, $filters);
+        return $this;
+    }
 
+    public function filtersKey(string $key)
+    {
+        $this->filtersKey = $key;
         return $this;
     }
 
     public function sorters(array $sorters)
     {
         $this->sorters = array_merge($this->sorters, $sorters);
-
         return $this;
     }
 
@@ -57,47 +58,91 @@ class Table implements Arrayable
     {
         $this->rows = $data;
         $this->resource = $class;
-
         return $this;
     }
 
     public function toArray()
     {
-        collect($this->filters)->map(function ($filter) {
-            if (! is_null(request()->input('filters.'.$filter->key))) {
-                $filter->apply($this->rows, request()->input('filters.'.$filter->key));
+        $this->applyFilters();
+        $this->applySorting();
+        $this->applyPaginate();
+
+        return [
+            'columns' => $this->columns,
+            'rows' => $this->rows,
+            'filters' => $this->filters,
+            'query' => $this->getQuery(),
+        ];
+    }
+
+    protected function applyFilters()
+    {
+        collect($this->filters)->each(function ($filter) {
+            $inputValue = request()->input("{$this->filtersKey}.{$filter->key()}");
+
+            $value = match (($inputValue['operator'] ?? '')) {
+                'starts_with' => ($inputValue['value'] ?? '') . '%',
+                'contains' => '%' . ($inputValue['value'] ?? '') . '%',
+                'ends_with' => '%' . ($inputValue['value'] ?? ''),
+                'is_empty' => null,
+                default => ($inputValue['value'] ?? ''),
+            };
+
+            $operator = match (($inputValue['operator'] ?? '')) {
+                'is_equals' => '=',
+                'is_greater_than' => '>',
+                'is_less_than' => '<',
+                'starts_with' => 'LIKE',
+                'contains' => 'LIKE',
+                'ends_with' => 'LIKE',
+                'is_empty' => '=', // laravel take cares of the correct SQL operator
+                default => '=',
+            };
+
+            if (! empty($value) && !empty($operator)) {
+                $filter->apply($this->rows, $operator, $value);
             }
         });
+    }
 
-        if (request()->has('sort')) {
-            $column = str_replace('-', '', request()->get('sort'));
-            $direction = str_starts_with(request()->get('sort'), '-') ? 'asc' : 'desc';
-            if (array_key_exists($column, $this->sorters)) {
-                $this->sorters[$column]($this->rows, $direction);
-            } else {
-                $this->rows->orderBy($column, $direction);
-            }
-        }
+    protected function applyPaginate()
+    {
+        $perPage = request()->input(
+            "{$this->filtersKey}.per_page",
+            config('table.default_query.per_page', 15)
+        );
 
         $this->rows = $this->rows
-            ->paginate(request('filters.per_page', 15))
+            ->paginate($perPage, ['*'], $this->filtersKey . '_page')
             ->withQueryString();
 
         if (! is_null($this->resource)) {
             $class = $this->resource;
             $this->rows->through(fn ($item) => $class::make($item));
         }
+    }
 
-        return [
-            'columns' => $this->columns,
-            'rows' => $this->rows,
-            'filters' => $this->filters,
-            'query' => collect($this->filters)
-                ->mapWithKeys(fn ($filter) => [
-                    $filter->key => request()->input('filters.'.$filter->key),
-                ])
-                ->merge(['per_page' => request('filters.per_page')], $this->query)
-                ->toArray(),
-        ];
+    protected function applySorting()
+    {
+        if (request()->has($this->filtersKey . '_sort')) {
+            $column = str_replace('-', '', request()->input($this->filtersKey . '_sort'));
+            $direction = str_starts_with(request()->input($this->filtersKey . '_sort'), '-') ? 'asc' : 'desc';
+            if (array_key_exists($column, $this->sorters)) {
+                $this->sorters[$column]($this->rows, $direction);
+            } else {
+                $this->rows->orderBy($column, $direction);
+            }
+        }
+    }
+
+    protected function getQuery(): array
+    {
+        return collect($this->filters)
+            ->mapWithKeys(fn ($filter) => [
+                $filter->key() => request()->input("$this->filtersKey." . $filter->key()),
+            ])
+            ->filter()
+            ->merge([ 'per_page' => request("$this->filtersKey.per_page") ], $this->query)
+            ->toArray();
     }
 }
