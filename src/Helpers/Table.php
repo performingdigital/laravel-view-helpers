@@ -33,24 +33,28 @@ class Table implements Arrayable
     public function columns(array $columns)
     {
         $this->columns = collect($columns)->map->toArray()->toArray();
+
         return $this;
     }
 
     public function filters(array $filters)
     {
         $this->filters = array_merge($this->filters, $filters);
+
         return $this;
     }
 
     public function filtersKey(string $key)
     {
         $this->filtersKey = $key;
+
         return $this;
     }
 
     public function sorters(array $sorters)
     {
         $this->sorters = array_merge($this->sorters, $sorters);
+
         return $this;
     }
 
@@ -58,6 +62,7 @@ class Table implements Arrayable
     {
         $this->rows = $data;
         $this->resource = $class;
+
         return $this;
     }
 
@@ -81,9 +86,9 @@ class Table implements Arrayable
             $inputValue = request()->input("{$this->filtersKey}.{$filter->key()}");
 
             $value = match (($inputValue['operator'] ?? '')) {
-                'starts_with' => ($inputValue['value'] ?? '') . '%',
-                'contains' => '%' . ($inputValue['value'] ?? '') . '%',
-                'ends_with' => '%' . ($inputValue['value'] ?? ''),
+                'starts_with' => ($inputValue['value'] ?? '').'%',
+                'contains' => '%'.($inputValue['value'] ?? '').'%',
+                'ends_with' => '%'.($inputValue['value'] ?? ''),
                 'is_empty' => null,
                 default => ($inputValue['value'] ?? ''),
             };
@@ -99,7 +104,7 @@ class Table implements Arrayable
                 default => '=',
             };
 
-            if (! empty($value) && !empty($operator)) {
+            if (! empty($value) && ! empty($operator)) {
                 $filter->apply($this->rows, $operator, $value);
             }
         });
@@ -113,7 +118,7 @@ class Table implements Arrayable
         );
 
         $this->rows = $this->rows
-            ->paginate($perPage, ['*'], $this->filtersKey . '_page')
+            ->paginate($perPage, ['*'], $this->filtersKey.'_page')
             ->withQueryString();
 
         if (! is_null($this->resource)) {
@@ -124,9 +129,9 @@ class Table implements Arrayable
 
     protected function applySorting()
     {
-        if (request()->has($this->filtersKey . '_sort')) {
-            $column = str_replace('-', '', request()->input($this->filtersKey . '_sort'));
-            $direction = str_starts_with(request()->input($this->filtersKey . '_sort'), '-') ? 'asc' : 'desc';
+        if (request()->has($this->filtersKey.'_sort')) {
+            $column = str_replace('-', '', request()->input($this->filtersKey.'_sort'));
+            $direction = str_starts_with(request()->input($this->filtersKey.'_sort'), '-') ? 'asc' : 'desc';
             if (array_key_exists($column, $this->sorters)) {
                 $this->sorters[$column]($this->rows, $direction);
             } else {
@@ -139,10 +144,10 @@ class Table implements Arrayable
     {
         return collect($this->filters)
             ->mapWithKeys(fn ($filter) => [
-                $filter->key() => request()->input("$this->filtersKey." . $filter->key()),
+                $filter->key() => request()->input("$this->filtersKey.".$filter->key()),
             ])
             ->filter()
-            ->merge([ 'per_page' => request("$this->filtersKey.per_page") ], $this->query)
+            ->merge(['per_page' => request("$this->filtersKey.per_page")], $this->query)
             ->toArray();
     }
 }
