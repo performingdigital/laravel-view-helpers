@@ -13,17 +13,11 @@ use Performing\View\Helpers\Table;
 class Page implements Arrayable
 {
     use Mergeable;
-    use HasForm;
-    use HasTable;
-    use HasActions;
-
-    protected array $data = [];
 
     public function __construct(
-        protected string $title
-    ) {
-        $this->data['title'] = $this->title;
-    }
+        protected string $title,
+        protected array $data = []
+    ) {}
 
     public static function make(string $title)
     {
@@ -32,36 +26,33 @@ class Page implements Arrayable
 
     public function toArray()
     {
+        $this->data['title'] = $this->title;
+
         return $this->data;
-    }
-
-    public function __call(string $name, array $args)
-    {
-        if (str_starts_with($name, 'table') && ! method_exists($this, $name)) {
-            $callback = $args[0];
-            if (! is_callable($callback)) {
-                throw new \Exception('Table helper expects callable as first argument');
-            }
-            $this->data[strtolower(str_replace('table', '', $name))] = $callback(Table::make())->toArray();
-
-            return $this;
-        }
-
-        if (! method_exists($this, $name)) {
-            $this->data[$name] = $args[0];
-
-            return $this;
-        }
     }
 
     public function render($component)
     {
         $data = [];
 
-        foreach ($this->data as $key => $value) {
+        foreach ($this->toArray() as $key => $value) {
             $data[$key] = fn () => $value;
         }
 
         return Inertia::render($component, $data);
+    }
+
+    public function __call(string $name, array $args)
+    {
+        if (! method_exists($this, $name)) {
+
+            if (is_callable($args[0])) {
+                $this->data[$name] = call_user_func($args[0]);
+            } else {
+                $this->data[$name] = $args[0];
+            }
+
+            return $this;
+        }
     }
 }

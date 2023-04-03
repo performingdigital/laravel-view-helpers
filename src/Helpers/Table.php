@@ -3,6 +3,7 @@
 namespace Performing\View\Helpers;
 
 use Illuminate\Contracts\Support\Arrayable;
+use Performing\View\Operators\OperatorFactory;
 
 class Table implements Arrayable
 {
@@ -85,40 +86,21 @@ class Table implements Arrayable
         collect($this->filters)->each(function ($filter) {
             $inputValue = request()->input("{$this->filtersKey}.{$filter->key()}");
 
-            $value = match (($inputValue['operator'] ?? '')) {
-                'starts_with' => ($inputValue['value'] ?? '').'%',
-                'contains' => '%'.($inputValue['value'] ?? '').'%',
-                'ends_with' => '%'.($inputValue['value'] ?? ''),
-                'is_empty' => null,
-                default => ($inputValue['value'] ?? ''),
-            };
-
-            $operator = match (($inputValue['operator'] ?? '')) {
-                'is_equals' => '=',
-                'is_greater_than' => '>',
-                'is_less_than' => '<',
-                'starts_with' => 'LIKE',
-                'contains' => 'LIKE',
-                'ends_with' => 'LIKE',
-                'is_empty' => '=', // laravel take cares of the correct SQL operator
-                default => '=',
-            };
-
-            if (! empty($value) && ! empty($operator)) {
-                $filter->apply($this->rows, $operator, $value);
+            if (! empty($inputValue['value']) && ! empty($inputValue['operator'])) {
+                $op = OperatorFactory::getOperator($inputValue['operator']);
+                $filter->apply(
+                    $this->rows,
+                    $op->toSql(),
+                    $op->transform($inputValue['value'])
+                );
             }
         });
     }
 
     protected function applyPaginate()
     {
-        $perPage = request()->input(
-            "{$this->filtersKey}.per_page",
-            config('table.default_query.per_page', 15)
-        );
-
         $this->rows = $this->rows
-            ->paginate($perPage, ['*'], $this->filtersKey.'_page')
+            ->paginate($this->getPerPage(), ['*'], $this->filtersKey.'_page')
             ->withQueryString();
 
         if (! is_null($this->resource)) {
@@ -147,7 +129,14 @@ class Table implements Arrayable
                 $filter->key() => request()->input("$this->filtersKey.".$filter->key()),
             ])
             ->filter()
-            ->merge(['per_page' => request("$this->filtersKey.per_page")], $this->query)
+            ->merge([
+                'per_page' => $this->getPerPage()
+            ])
             ->toArray();
+    }
+
+    public function getPerPage()
+    {
+        return (int) request()->input("{$this->filtersKey}.per_page",$this->query['per_page']);
     }
 }
