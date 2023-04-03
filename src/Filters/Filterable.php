@@ -2,8 +2,8 @@
 
 namespace Performing\View\Filters;
 
-use Performing\View\Operators\Operator;
 use Illuminate\Database\Eloquent\Builder;
+use Performing\View\Operators\Operator;
 
 interface Filterable
 {

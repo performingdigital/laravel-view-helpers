@@ -53,7 +53,7 @@ abstract class Filter implements Arrayable, Filterable
             'type' => $this->type(),
             'props' => $this->props(),
             'operators' => collect($this->operators())
-                ->mapWithKeys(fn ($op) => [ $op->key() => $op->label() ])
+                ->mapWithKeys(fn ($op) => [$op->key() => $op->label()])
                 ->toArray(),
         ];
     }

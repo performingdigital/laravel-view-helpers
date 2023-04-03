@@ -2,13 +2,6 @@
 
 namespace Performing\View\Operators;
 
-use Performing\View\Operators\Contains;
-use Performing\View\Operators\EndsWith;
-use Performing\View\Operators\IsEquals;
-use Performing\View\Operators\IsGreaterThan;
-use Performing\View\Operators\IsLessThan;
-use Performing\View\Operators\IsNotEquals;
-use Performing\View\Operators\StartsWith;
 use PHPUnit\Framework\Constraint\IsEmpty;
 
 class OperatorFactory

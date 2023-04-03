@@ -4,11 +4,7 @@ namespace Performing\View;
 
 use Illuminate\Contracts\Support\Arrayable;
 use Inertia\Inertia;
-use Performing\View\Concerns\HasActions;
-use Performing\View\Concerns\HasForm;
-use Performing\View\Concerns\HasTable;
 use Performing\View\Concerns\Mergeable;
-use Performing\View\Helpers\Table;
 
 class Page implements Arrayable
 {
@@ -17,7 +13,8 @@ class Page implements Arrayable
     public function __construct(
         protected string $title,
         protected array $data = []
-    ) {}
+    ) {
+    }
 
     public static function make(string $title)
     {
@@ -45,7 +42,6 @@ class Page implements Arrayable
     public function __call(string $name, array $args)
     {
         if (! method_exists($this, $name)) {
-
             if (is_callable($args[0])) {
                 $this->data[$name] = call_user_func($args[0]);
             } else {

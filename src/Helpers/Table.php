@@ -130,13 +130,13 @@ class Table implements Arrayable
             ])
             ->filter()
             ->merge([
-                'per_page' => $this->getPerPage()
+                'per_page' => $this->getPerPage(),
             ])
             ->toArray();
     }
 
     public function getPerPage()
     {
-        return (int) request()->input("{$this->filtersKey}.per_page",$this->query['per_page']);
+        return (int) request()->input("{$this->filtersKey}.per_page", $this->query['per_page']);
     }
 }

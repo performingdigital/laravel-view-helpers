@@ -21,6 +21,6 @@ class EndsWith extends Operator
 
     public function transform($value): ?string
     {
-        return '%' . $value;
+        return '%'.$value;
     }
 }
