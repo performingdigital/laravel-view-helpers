@@ -2,16 +2,16 @@
 
 namespace Performing\View\Factories;
 
-use Performing\View\Operators\IsEqual;
-use Performing\View\Operators\IsNotEqual;
-use Performing\View\Operators\IsGreaterThan;
-use Performing\View\Operators\IsLessThan;
-use Performing\View\Operators\IsOneOfAny;
-use Performing\View\Operators\StartsWith;
 use Performing\View\Operators\Contains;
-use Performing\View\Operators\NotContains;
 use Performing\View\Operators\EndsWith;
 use Performing\View\Operators\IsEmpty;
+use Performing\View\Operators\IsEqual;
+use Performing\View\Operators\IsGreaterThan;
+use Performing\View\Operators\IsLessThan;
+use Performing\View\Operators\IsNotEqual;
+use Performing\View\Operators\IsOneOfAny;
+use Performing\View\Operators\NotContains;
+use Performing\View\Operators\StartsWith;
 
 class OperatorFactory
 {

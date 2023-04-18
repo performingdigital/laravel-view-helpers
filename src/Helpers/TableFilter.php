@@ -2,9 +2,7 @@
 
 namespace Performing\View\Helpers;
 
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Builder;
-use Performing\View\Filters\FilterableType;
 use Performing\View\Filters\FilterType;
 use Performing\View\Filters\FilterTypeProp;
 
@@ -16,7 +14,8 @@ class TableFilter extends FilterType
         protected array $operators = [],
         protected array $options = [],
         protected $callback = null,
-    ) {}
+    ) {
+    }
 
     public static function make(string $label)
     {

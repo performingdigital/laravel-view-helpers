@@ -41,7 +41,7 @@ abstract class FilterType implements Arrayable, FilterableType
             'name' => $this->name(),
             'label' => $this->label(),
             'props' => $this->props(),
-            'operators' => $this->operators()
+            'operators' => $this->operators(),
         ];
     }
 }
