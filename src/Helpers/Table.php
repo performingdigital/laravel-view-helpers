@@ -93,7 +93,7 @@ class Table implements Arrayable
 
     public function applyFilter($filter)
     {
-        $params = request()->input($this->filtersKey . '.' . $filter->name());
+        $params = request()->input($this->filtersKey.'.'.$filter->name());
 
         $value = is_array($params)
             ? $params['value'] ?? null
@@ -113,7 +113,7 @@ class Table implements Arrayable
     protected function applyPaginate()
     {
         $this->rows = $this->rows
-            ->paginate($this->getPerPage(), ['*'], $this->filtersKey . '_page')
+            ->paginate($this->getPerPage(), ['*'], $this->filtersKey.'_page')
             ->withQueryString();
 
         if (! is_null($this->resource)) {
@@ -124,9 +124,9 @@ class Table implements Arrayable
 
     protected function applySorting()
     {
-        if (request()->has($this->filtersKey . '_sort')) {
-            $column = str_replace('-', '', request()->input($this->filtersKey . '_sort'));
-            $direction = str_starts_with(request()->input($this->filtersKey . '_sort'), '-') ? 'asc' : 'desc';
+        if (request()->has($this->filtersKey.'_sort')) {
+            $column = str_replace('-', '', request()->input($this->filtersKey.'_sort'));
+            $direction = str_starts_with(request()->input($this->filtersKey.'_sort'), '-') ? 'asc' : 'desc';
             if (array_key_exists($column, $this->sorters)) {
                 $this->sorters[$column]($this->rows, $direction);
             } else {
@@ -139,7 +139,7 @@ class Table implements Arrayable
     {
         return collect($this->filters)
             ->mapWithKeys(fn ($filter) => [
-                $filter->name() => request()->input("$this->filtersKey." . $filter->name()),
+                $filter->name() => request()->input("$this->filtersKey.".$filter->name()),
             ])
             ->merge([
                 'search' => request()->input("$this->filtersKey.search"),
