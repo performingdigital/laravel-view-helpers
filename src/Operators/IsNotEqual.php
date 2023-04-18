@@ -2,11 +2,11 @@
 
 namespace Performing\View\Operators;
 
-class IsNotEquals extends Operator
+class IsNotEqual extends Operator
 {
     public function key(): string
     {
-        return 'is_not_equals';
+        return 'is_not_equal';
     }
 
     public function label(): string

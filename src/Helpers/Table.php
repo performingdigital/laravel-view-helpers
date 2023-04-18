@@ -2,8 +2,9 @@
 
 namespace Performing\View\Helpers;
 
+use App\View\Filters\SearchFilter;
 use Illuminate\Contracts\Support\Arrayable;
-use Performing\View\Operators\OperatorFactory;
+use Performing\View\Factories\OperatorFactory;
 
 class Table implements Arrayable
 {
@@ -17,7 +18,7 @@ class Table implements Arrayable
 
     protected ?string $resource = null;
 
-    protected array $query = [];
+    protected array $query = ['par_page' => 10];
 
     protected string $filtersKey = 'filters';
 
@@ -83,24 +84,36 @@ class Table implements Arrayable
 
     protected function applyFilters()
     {
-        collect($this->filters)->each(function ($filter) {
-            $inputValue = request()->input("{$this->filtersKey}.{$filter->key()}");
-
-            if (! empty($inputValue['value']) && ! empty($inputValue['operator'])) {
-                $op = OperatorFactory::getOperator($inputValue['operator']);
-                $filter->apply(
-                    $this->rows,
-                    $op->toSql(),
-                    $op->transform($inputValue['value'])
-                );
-            }
+        collect($this->rows->getModel()->getFilters())->each(function ($filter) {
+            $this->applyFilter($filter);
         });
+
+        collect($this->filters)->each(function ($filter) {
+            $this->applyFilter($filter);
+        });
+    }
+
+    public function applyFilter($filter)
+    {
+        $params = request()->input('filters.' . $filter->name());
+
+        if (!is_array($params)) {
+            return;
+        }
+
+        if (! empty($params['operator'])) {
+            $filter->withOperator($params['operator']);
+        }
+
+        if (! empty($params['value'])) {
+            $filter->withValue($params['value'])->apply($this->rows);
+        }
     }
 
     protected function applyPaginate()
     {
         $this->rows = $this->rows
-            ->paginate($this->getPerPage(), ['*'], $this->filtersKey.'_page')
+            ->paginate($this->getPerPage(), ['*'], $this->filtersKey . '_page')
             ->withQueryString();
 
         if (! is_null($this->resource)) {
@@ -111,9 +124,9 @@ class Table implements Arrayable
 
     protected function applySorting()
     {
-        if (request()->has($this->filtersKey.'_sort')) {
-            $column = str_replace('-', '', request()->input($this->filtersKey.'_sort'));
-            $direction = str_starts_with(request()->input($this->filtersKey.'_sort'), '-') ? 'asc' : 'desc';
+        if (request()->has($this->filtersKey . '_sort')) {
+            $column = str_replace('-', '', request()->input($this->filtersKey . '_sort'));
+            $direction = str_starts_with(request()->input($this->filtersKey . '_sort'), '-') ? 'asc' : 'desc';
             if (array_key_exists($column, $this->sorters)) {
                 $this->sorters[$column]($this->rows, $direction);
             } else {
@@ -126,7 +139,10 @@ class Table implements Arrayable
     {
         return collect($this->filters)
             ->mapWithKeys(fn ($filter) => [
-                $filter->key() => request()->input("$this->filtersKey.".$filter->key()),
+                $filter->name() => request()->input("$this->filtersKey." . $filter->name()),
+            ])
+            ->merge([
+                'search' => request()->input("$this->filtersKey.search"),
             ])
             ->filter()
             ->merge([

@@ -2,20 +2,20 @@
 
 namespace Performing\View\Operators;
 
-class IsEquals extends Operator
+class IsOneOfAny extends Operator
 {
     public function key(): string
     {
-        return 'is_equals';
+        return 'is_one_of_any';
     }
 
     public function label(): string
     {
-        return __('È uguale a...');
+        return __('È uno tra...');
     }
 
     public function toSql(): string
     {
-        return '=';
+        return 'in';
     }
 }

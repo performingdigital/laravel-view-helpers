@@ -5,7 +5,7 @@ namespace Performing\View\Helpers;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Str;
 
-class Column implements Arrayable
+class TableColumn implements Arrayable
 {
     protected bool $sortable = false;
 

@@ -3,6 +3,6 @@
 namespace Performing\View\Filters;
 
 #[\Attribute]
-class FilterProp
+class FilterTypeProp
 {
 }

@@ -2,7 +2,9 @@
 
 namespace Performing\View\Operators;
 
-abstract class Operator
+use Illuminate\Contracts\Support\Arrayable;
+
+abstract class Operator implements Arrayable
 {
     abstract public function key(): string;
 
@@ -13,5 +15,13 @@ abstract class Operator
     public function transform($value): ?string
     {
         return $value;
+    }
+
+    public function toArray()
+    {
+        return [
+            'key' => $this->key(),
+            'label' => $this->label(),
+        ];
     }
 }

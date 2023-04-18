@@ -5,15 +5,15 @@ namespace Performing\View\Helpers;
 use Illuminate\Contracts\Support\Arrayable;
 use Performing\View\Concerns\Mergeable;
 
-class Action implements Arrayable
+class Link implements Arrayable
 {
     use Mergeable;
 
     protected $data = [];
 
-    public static function make(string $label, string $href): Action
+    public static function make(string $label, string $href): self
     {
-        $action = new Action();
+        $action = new static();
 
         return $action->merge(['label' => $label, 'href' => $href]);
     }

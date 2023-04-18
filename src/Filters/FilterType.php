@@ -4,21 +4,13 @@ namespace Performing\View\Filters;
 
 use Illuminate\Contracts\Support\Arrayable;
 
-abstract class Filter implements Arrayable, Filterable
+abstract class FilterType implements Arrayable, FilterableType
 {
-    public function key(): string
-    {
-        return str($this->title())->slug('_')->toString();
-    }
+    use FilterScope;
 
-    public function hint(): ?string
+    public function name(): string
     {
-        return null;
-    }
-
-    public function placeholder(): ?string
-    {
-        return null;
+        return str($this->label())->slug('_')->toString();
     }
 
     public function type(): string
@@ -46,15 +38,10 @@ abstract class Filter implements Arrayable, Filterable
     public function toArray()
     {
         return [
-            'key' => $this->key(),
-            'label' => $this->title(),
-            'title' => $this->title(),
-            'hint' => $this->hint(),
-            'type' => $this->type(),
+            'name' => $this->name(),
+            'label' => $this->label(),
             'props' => $this->props(),
-            'operators' => collect($this->operators())
-                ->mapWithKeys(fn ($op) => [$op->key() => $op->label()])
-                ->toArray(),
+            'operators' => $this->operators()
         ];
     }
 }
