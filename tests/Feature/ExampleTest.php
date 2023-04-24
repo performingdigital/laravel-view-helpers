@@ -18,19 +18,19 @@ it('create a page', function () {
             ->has(
                 'table',
                 fn (AssertableInertia $table) => $table
-                ->has('rows.data', 3, fn (AssertableInertia $page) => $page
-                    ->where('id', 1)
-                    ->where('title', $posts[0]->title)
-                    ->where('created_at', $posts[0]->created_at->format('d/m/Y'))
-                )
-                ->has('columns', 3, fn (AssertableInertia $page) => $page
-                    ->where('key', 'id')
-                    ->where('title', 'ID')
-                    ->where('type', 'text')
-                    ->where('sortable', true)
-                )
-                ->has('filters')
-                ->has('query')
+                    ->has('rows.data', 3, fn (AssertableInertia $page) => $page
+                        ->where('id', 1)
+                        ->where('title', $posts[0]->title)
+                        ->where('created_at', $posts[0]->created_at->format('d/m/Y'))
+                    )
+                    ->has('columns', 3, fn (AssertableInertia $page) => $page
+                        ->where('key', 'id')
+                        ->where('title', 'ID')
+                        ->where('type', 'text')
+                        ->where('sortable', true)
+                    )
+                    ->has('filters')
+                    ->has('query')
             )
             ->has('form.schema.0', fn (AssertableInertia $page) => $page
                 ->where('help', '')
