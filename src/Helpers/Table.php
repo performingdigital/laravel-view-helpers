@@ -113,12 +113,21 @@ class Table implements Arrayable
     protected function applyPaginate()
     {
         $this->rows = $this->rows
-            ->paginate($this->getPerPage(), ['*'], $this->filtersKey.'_page')
+            ->paginate($this->getPerPage(), ['*'], $this->filtersKey . '_page')
             ->withQueryString();
 
         if (! is_null($this->resource)) {
             $class = $this->resource;
-            $this->rows->through(fn ($item) => $class::make($item));
+            $this->rows->through(function ($item) use ($class) {
+                $data = $class::make($item)->resolve();
+                foreach ($this->columns as $column) {
+                    if ($column->format instanceof \Closure) {
+                        $closure = \Closure::bind($column->format, $item);
+                        $data[$column->get('key')] = $closure($item, $column);
+                    }
+                }
+                return $data;
+            });
         }
     }
 
