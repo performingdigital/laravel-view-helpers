@@ -118,7 +118,17 @@ class Table implements Arrayable
 
         if (! is_null($this->resource)) {
             $class = $this->resource;
-            $this->rows->through(fn ($item) => $class::make($item));
+            $this->rows->through(function ($item) use ($class) {
+                $data = $class::make($item)->resolve();
+                foreach ($this->columns as $column) {
+                    if ($column->format instanceof \Closure) {
+                        $closure = \Closure::bind($column->format, $item);
+                        $data[$column->get('key')] = $closure($item, $column);
+                    }
+                }
+
+                return $data;
+            });
         }
     }
 
