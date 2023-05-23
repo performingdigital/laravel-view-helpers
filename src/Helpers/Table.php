@@ -113,7 +113,7 @@ class Table implements Arrayable
     protected function applyPaginate()
     {
         $this->rows = $this->rows
-            ->paginate($this->getPerPage(), ['*'], $this->filtersKey . '_page')
+            ->paginate($this->getPerPage(), ['*'], $this->filtersKey.'_page')
             ->withQueryString();
 
         if (! is_null($this->resource)) {
@@ -126,6 +126,7 @@ class Table implements Arrayable
                         $data[$column->get('key')] = $closure($item, $column);
                     }
                 }
+
                 return $data;
             });
         }
