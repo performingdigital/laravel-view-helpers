@@ -8,6 +8,8 @@ class TableColumn extends Helper
 {
     protected array $data = ['type' => 'text'];
 
+    public ?Closure $format = null;
+
     public function __construct(string $title, ?string $key = null)
     {
         $this->data['title'] = $title;
@@ -22,6 +24,13 @@ class TableColumn extends Helper
     public function sortable()
     {
         $this->data['sortable'] = true;
+
+        return $this;
+    }
+
+    public function format(Closure $format)
+    {
+        $this->format = $format;
 
         return $this;
     }
