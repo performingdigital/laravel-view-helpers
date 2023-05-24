@@ -2,6 +2,7 @@
 
 namespace Performing\View\Helpers;
 
+use Closure;
 use Illuminate\Support\Str;
 
 class TableColumn extends Helper

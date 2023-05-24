@@ -15,6 +15,11 @@ abstract class Helper implements Arrayable
         return $this;
     }
 
+    public function get(string $key, $default = null)
+    {
+        return $this->data[$key] ?? $default;
+    }
+
     public function toArray()
     {
         return $this->data;
