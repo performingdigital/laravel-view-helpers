@@ -32,7 +32,7 @@ class Table implements Arrayable
 
     public function columns(array $columns)
     {
-        $this->columns = collect($columns)->map->toArray()->toArray();
+        $this->columns = $columns;
 
         return $this;
     }
