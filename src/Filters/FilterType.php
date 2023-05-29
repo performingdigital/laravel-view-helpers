@@ -25,7 +25,7 @@ abstract class FilterType implements Arrayable, FilterableType
         $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
 
         foreach ($methods as $method) {
-            $attributes = $method->getAttributes(FilterProp::class);
+            $attributes = $method->getAttributes(FilterTypeProp::class);
 
             if (count($attributes) > 0) {
                 $props[$method->getName()] = $this->{$method->getName()}();
