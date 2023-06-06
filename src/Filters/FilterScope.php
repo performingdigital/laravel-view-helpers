@@ -26,6 +26,11 @@ trait FilterScope
         return $this;
     }
 
+    public function hasStandaloneOperator()
+    {
+        return $this->operator && $this->operator->standalone();
+    }
+
     public function getSqlOperator(): string
     {
         if (! $this->operator) {
