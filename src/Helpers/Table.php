@@ -3,6 +3,7 @@
 namespace Performing\View\Helpers;
 
 use Illuminate\Contracts\Support\Arrayable;
+use Performing\View\Factories\OperatorFactory;
 
 class Table implements Arrayable
 {
@@ -93,27 +94,31 @@ class Table implements Arrayable
 
     public function applyFilter($filter)
     {
-        $params = request()->input($this->filtersKey.'.'.$filter->name());
+        $params = request()->input($this->filtersKey . '.' . $filter->name());
 
         $value = is_array($params)
             ? $params['value'] ?? null
             : $params;
 
-        if (! $value) {
-            return;
+        $operator = is_array($params)
+            ? $params['operator'] ?? null
+            : null;
+
+        if ($operator) {
+            $filter->withOperator($operator);
         }
 
-        if (! empty($params['operator'])) {
-            $filter->withOperator($params['operator']);
+        if ($filter->hasStandaloneOperator()) {
+            $filter->apply($this->rows);
+        } elseif (! empty($value)) {
+            $filter->withValue($value)->apply($this->rows);
         }
-
-        $filter->withValue($value)->apply($this->rows);
     }
 
     protected function applyPaginate()
     {
         $this->rows = $this->rows
-            ->paginate($this->getPerPage(), ['*'], $this->filtersKey.'_page')
+            ->paginate($this->getPerPage(), ['*'], $this->filtersKey . '_page')
             ->withQueryString();
 
         if (! is_null($this->resource)) {
@@ -134,9 +139,9 @@ class Table implements Arrayable
 
     protected function applySorting()
     {
-        if (request()->has($this->filtersKey.'_sort')) {
-            $column = str_replace('-', '', request()->input($this->filtersKey.'_sort'));
-            $direction = str_starts_with(request()->input($this->filtersKey.'_sort'), '-') ? 'asc' : 'desc';
+        if (request()->has($this->filtersKey . '_sort')) {
+            $column = str_replace('-', '', request()->input($this->filtersKey . '_sort'));
+            $direction = str_starts_with(request()->input($this->filtersKey . '_sort'), '-') ? 'asc' : 'desc';
             if (array_key_exists($column, $this->sorters)) {
                 $this->sorters[$column]($this->rows, $direction);
             } else {
@@ -149,7 +154,7 @@ class Table implements Arrayable
     {
         return collect($this->filters)
             ->mapWithKeys(fn ($filter) => [
-                $filter->name() => request()->input("$this->filtersKey.".$filter->name()),
+                $filter->name() => request()->input("$this->filtersKey." . $filter->name()),
             ])
             ->merge([
                 'search' => request()->input("$this->filtersKey.search"),

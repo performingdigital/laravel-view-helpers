@@ -9,6 +9,11 @@ class IsEmpty extends Operator
         return 'is_empty';
     }
 
+    public function standalone()
+    {
+        return true;
+    }
+
     public function label(): string
     {
         return __('È vuoto...');

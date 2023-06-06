@@ -8,6 +8,7 @@ use Performing\View\Operators\IsEmpty;
 use Performing\View\Operators\IsEqual;
 use Performing\View\Operators\IsGreaterThan;
 use Performing\View\Operators\IsLessThan;
+use Performing\View\Operators\IsNotEmpty;
 use Performing\View\Operators\IsNotEqual;
 use Performing\View\Operators\IsOneOfAny;
 use Performing\View\Operators\NotContains;
@@ -27,6 +28,7 @@ class OperatorFactory
             'not_contains' => new NotContains(),
             'ends_with' => new EndsWith(),
             'is_empty' => new IsEmpty(),
+            'is_not_empty' => new IsNotEmpty(),
             'is_one_of_any' => new IsOneOfAny(),
             default => null,
         };

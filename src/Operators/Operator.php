@@ -12,6 +12,11 @@ abstract class Operator implements Arrayable
 
     abstract public function toSql(): string;
 
+    public function standalone()
+    {
+        return false;
+    }
+
     public function transform($value): ?string
     {
         return $value;
@@ -22,6 +27,7 @@ abstract class Operator implements Arrayable
         return [
             'key' => $this->key(),
             'label' => $this->label(),
+            'standalone' => $this->standalone(),
         ];
     }
 }
